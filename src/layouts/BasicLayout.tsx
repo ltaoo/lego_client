@@ -8,6 +8,7 @@ import {
 import './index.css';
 import Menu from '../components/Menu';
 import FakeMenu from '../components/FakeMenu';
+import Project from '../components/Project';
 
 const menus = [
   {
@@ -31,7 +32,10 @@ export default class BasicLayout extends React.Component {
         <Layout>
           <div className="layout__header">
             <Button type="primary" className="create-project">创建项目</Button>
-            <Button>创建项目</Button>
+            <Button>打开项目</Button>
+          </div>
+          <div>
+            <Project />
           </div>
         </Layout>
       </div>
