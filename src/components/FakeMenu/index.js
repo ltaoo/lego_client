@@ -4,8 +4,10 @@
  */
 import * as React from 'react';
 
+import './index.css';
+
 export default function FakeMenu(props) {
     return (
-        
+        <div className="fake-menu" />
     );
 }

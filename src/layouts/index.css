@@ -6,3 +6,11 @@
     width: 76px;
     background: rgb(48, 128, 254);
 }
+.layout__header {
+    padding: 12px 24px;
+    box-shadow: 0 1px 4px #ccc;
+}
+
+.create-project {
+    margin-right: 10px;
+}
