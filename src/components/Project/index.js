@@ -11,10 +11,27 @@ import Menu from './Menu';
 export default function ProjectItem(props) {
   return (
     <div className="project">
-      <div className="project__content">
-        <div className="project__title">iceTest</div>
-        <div className="project__url"><span>本地服务器：</span><a>http://10.10.71.51:4444</a></div>
-        <div>调试服务运行中</div>
+      <div className="project__wrapper">
+        <div className="project__content">
+          <span className="title__line"></span><h3 className="project__title">iceTest</h3>
+          <div className="project__url">
+            <span className="project__text--small">本地服务器：</span>
+            <a className="project__link">http://10.10.71.51:4444</a>
+            <span className="content__menu"><Icon type="copy" /></span>
+            <span className="content__menu"><Icon type="global" /></span>
+          </div>
+          <span className="project__status project__status--success">调试服务运行中</span>
+        </div>
+        <Tooltip
+          overlayClassName="menu__tip"
+          placement="left"
+          title={<span>启动调试服务</span>}
+          mouseEnterDelay={2}
+        >
+          <div className="project__start">
+            <Icon type="play-circle-o" />
+          </div>
+        </Tooltip>
       </div>
       <Menu />
     </div>

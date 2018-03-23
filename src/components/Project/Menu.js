@@ -3,16 +3,16 @@ import { Tooltip, Icon } from 'antd';
 
 const menus = [
   {
-    tip: '项目构建',
+    tip: '移除项目',
+    icon: <Icon type="delete" />,
+  },
+  {
+    tip: '更改代理 API',
     icon: <Icon type="api" />,
   },
   {
     tip: '项目构建',
     icon: <Icon type="profile" />,
-  },
-  {
-    tip: '项目构建',
-    icon: <Icon type="coffee" />,
   },
   {
     tip: '启动调试服务',
