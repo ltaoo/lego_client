@@ -4,6 +4,7 @@
 .layout__sider {
     float: left;
     width: 76px;
+    height: 100vh;
     background: rgb(48, 128, 254);
 }
 .layout__header {
@@ -13,4 +14,8 @@
 
 .create-project {
     margin-right: 10px;
+}
+.projects {
+    height: calc(100vh - 60px);
+    overflow-y: auto;
 }

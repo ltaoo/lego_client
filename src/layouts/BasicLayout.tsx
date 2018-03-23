@@ -34,7 +34,7 @@ export default class BasicLayout extends React.Component {
             <Button type="primary" className="create-project">创建项目</Button>
             <Button>打开项目</Button>
           </div>
-          <div>
+          <div className="projects">
             <Project />
           </div>
         </Layout>

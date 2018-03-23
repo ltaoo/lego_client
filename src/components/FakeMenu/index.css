@@ -1,4 +1,30 @@
 .fake-menu {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
     height: 56px;
     box-shadow: 0 1px 4px #ccc;
+}
+.fake-menu__item {
+    display: inline-block;
+    border-radius: 6px;
+    margin-right: 8px;
+    width: 12px;
+    height: 12px;
+    box-sizing: border-box;
+}
+.fake-menu__item:last-child {
+    margin-right: 0;
+}
+.fake-menu__item--close {
+    border: 1px solid rgb(237, 107, 96);
+    background: rgb(237, 107, 96);
+}
+.fake-menu__item--min {
+    border: 1px solid rgb(246, 190, 79);
+    background: rgb(246, 190, 79);
+}
+.fake-menu__item--max {
+    border: 1px solid rgb(100, 201, 87);
+    background: rgb(100, 201, 87);
 }
