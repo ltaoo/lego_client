@@ -1,0 +1,24 @@
+.menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 20px;
+    color: rgba(255, 255, 255, .6);
+    font-weight: lighter;
+    cursor: pointer;
+}
+.menu:hover {
+    background: rgb(89, 153, 254);
+    color: rgba(255, 255, 255, .9);
+}
+.menu--active {
+    background: rgb(69, 141, 254);
+    color: rgb(255, 255, 255);
+}
+.menu__icon {
+    font-size: 22px;
+}
+.menu__title {
+    font-size: 12px;
+    font-weight: lighter;
+}

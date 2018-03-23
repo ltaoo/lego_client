@@ -1,0 +1,8 @@
+.layout__container {
+    display: flex;
+}
+.layout__sider {
+    float: left;
+    width: 76px;
+    background: rgb(48, 128, 254);
+}
