@@ -1,44 +1,46 @@
 import * as React from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { 
   Layout,
   Icon,
-  Button,
 } from 'antd';
 
 import './index.css';
 import Menu from '../components/Menu';
 import FakeMenu from '../components/FakeMenu';
-import Project from '../components/Project';
+// page
+import Home from '../routes/Home/index';
+// import Setting from '../routes/Setting/index';
 
 const menus = [
   {
     title: '项目',
     icon: <Icon type="rocket" />,
+    link: '/',
   },
   {
     title: '设置',
     icon: <Icon type="setting" />,
+    link: '/setting',
   },
 ];
 
 export default class BasicLayout extends React.Component {
   render() {
     return (
-      <div className="layout__container">
-        <div className="layout__sider">
-          <FakeMenu />
-          <Menu menus={menus} />
+      <Router>
+        <div className="layout__container">
+          <div className="layout__sider">
+            <FakeMenu />
+            <Menu
+              menus={menus}
+            />
+          </div>
+          <Layout>
+            <Route exact={true} path="/" component={Home} />
+          </Layout>
         </div>
-        <Layout>
-          <div className="layout__header">
-            <Button type="primary" className="create-project">创建项目</Button>
-            <Button>打开项目</Button>
-          </div>
-          <div className="projects">
-            <Project />
-          </div>
-        </Layout>
-      </div>
+      </Router>
     );
   }
 }

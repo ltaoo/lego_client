@@ -1,16 +1,26 @@
 import * as React from 'react';
+import { Route, Link } from 'react-router-dom';
 import classNames from 'classnames';
 
 export default function MeunItem(props) {
-  const { icon, title, index } = props;
-  const cls = classNames({
-      menu: true,
-      'menu--active': index === 0,
-  });
+  const { icon, title, link, index } = props;
   return (
-    <div className={cls}>
-      <div className="menu__icon">{icon}</div>
-      <div className="menu__title">{title}</div>
-    </div>
+    <Route
+      path={link}
+      children={({ match }) => {
+        console.log(match);
+        const cls = classNames({
+          menu: true,
+          'menu__link': true,
+          'menu--active': match && match.isExact,
+        });
+        return (
+          <Link className={cls} to={link}>
+            <div className="menu__icon">{icon}</div>
+            <span className="menu__title">{title}</span>
+          </Link>
+        );
+      }}
+    />
   );
 }
