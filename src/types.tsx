@@ -12,5 +12,5 @@ export interface ProjectType {
 export interface StoreState {
   languageName: string;
   enthusiasmLevel: number;
-  projects: Array<ProjectType>;
+  projects: Array<ProjectType | undefined>;
 }

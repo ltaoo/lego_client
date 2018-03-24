@@ -68,7 +68,7 @@ export function mapStateToProps({ enthusiasmLevel, languageName, projects }: Sto
     projects,
   };
 }
-export function mapDispatchToProps(dispatch: Dispatch<actions.AddProject>) {
+export function mapDispatchToProps(dispatch: Dispatch<actions.AddProjectActionType>) {
   return {
     onIncrement: (payload: string) => dispatch(actions.addProject(payload)),
     onDecrement: () => dispatch(actions.decrementEnthusiasm()),

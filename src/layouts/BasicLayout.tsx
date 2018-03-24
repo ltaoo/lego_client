@@ -10,7 +10,7 @@ import Menu from '../components/Menu';
 import FakeMenu from '../components/FakeMenu';
 // page
 import Home from '../routes/Home/index';
-// import Setting from '../routes/Setting/index';
+import Setting from '../routes/Setting/index';
 
 const menus = [
   {
@@ -38,6 +38,7 @@ export default class BasicLayout extends React.Component {
           </div>
           <Layout>
             <Route exact={true} path="/" component={Home} />
+            <Route path="/setting" component={Setting} />
           </Layout>
         </div>
       </Router>
