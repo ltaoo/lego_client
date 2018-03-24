@@ -1,9 +1,6 @@
 import * as React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { 
-  Layout,
-  Icon,
-} from 'antd';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Layout, Icon } from 'antd';
 
 import './index.css';
 import Menu from '../components/Menu';
@@ -25,6 +22,15 @@ const menus = [
   },
 ];
 
+const routes = function getRoutes() {
+  return (
+    <Switch>
+      <Route exact={true} path="/" component={Home} />
+      <Route path="/setting" component={Setting} />
+    </Switch>
+  );
+};
+
 export default class BasicLayout extends React.Component {
   render() {
     return (
@@ -32,13 +38,10 @@ export default class BasicLayout extends React.Component {
         <div className="layout__container">
           <div className="layout__sider">
             <FakeMenu />
-            <Menu
-              menus={menus}
-            />
+            <Menu menus={menus} />
           </div>
-          <Layout>
-            <Route exact={true} path="/" component={Home} />
-            <Route path="/setting" component={Setting} />
+          <Layout className="layout__content">
+            {routes()}
           </Layout>
         </div>
       </Router>

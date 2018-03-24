@@ -17,7 +17,7 @@
 .create-project {
     margin-right: 10px;
 }
-.projects {
-    height: calc(100vh - 60px);
+.layout__content {
+    height: 100vh;
     overflow-y: auto;
 }

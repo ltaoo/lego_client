@@ -3,6 +3,7 @@ import { remote } from 'electron';
 import { connect, Dispatch } from 'react-redux';
 import { Button } from 'antd';
 
+import withStack from '../../components/PageStack/withStack';
 import Project from '../../components/Project';
 import { 
   StoreState,
@@ -78,4 +79,4 @@ export function mergeProps(stateProps: Object, dispatchProps: Object, ownProps: 
   return Object.assign({}, ownProps, stateProps, dispatchProps);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(withStack(Home));
