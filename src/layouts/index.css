@@ -6,10 +6,12 @@
     width: 76px;
     height: 100vh;
     background: rgb(48, 128, 254);
+    -webkit-app-region: drag;
 }
 .layout__header {
     padding: 12px 24px;
     box-shadow: 0 1px 4px #ccc;
+    -webkit-app-region: drag;
 }
 
 .create-project {

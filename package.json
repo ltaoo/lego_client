@@ -6,22 +6,27 @@
   "dependencies": {
     "antd": "^3.3.1",
     "classnames": "^2.2.5",
+    "invariant": "^2.2.4",
+    "q": "^1.5.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-router-dom": "^4.2.2",
     "react-scripts-ts": "2.14.0"
   },
   "scripts": {
-    "start": "react-scripts-ts start",
-    "build": "react-scripts-ts build",
-    "test": "react-scripts-ts test --env=jsdom",
+    "start": "react-app-rewired start --scripts-version react-scripts-ts",
+    "build": "react-app-rewired build --scripts-version react-scripts-ts",
+    "test": "react-app-rewired test --env=jsdom --scripts-version react-scripts-ts",
     "eject": "react-scripts-ts eject",
     "electron": "electron ."
   },
   "devDependencies": {
+    "@types/invariant": "^2.2.29",
     "@types/jest": "^22.2.2",
     "@types/node": "^9.6.0",
     "@types/react": "^16.0.40",
     "@types/react-dom": "^16.0.4",
+    "@types/react-router-dom": "^4.2.5",
     "electron": "^1.8.4",
     "react-app-rewired": "^1.5.0",
     "typescript": "^2.7.2"

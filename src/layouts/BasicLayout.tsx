@@ -9,7 +9,7 @@ import './index.css';
 import Menu from '../components/Menu';
 import FakeMenu from '../components/FakeMenu';
 // page
-import Home from '../routes/Home/index';
+import Home from '../routes/Home';
 // import Setting from '../routes/Setting/index';
 
 const menus = [
