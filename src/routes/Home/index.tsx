@@ -4,27 +4,43 @@ import { connect, Dispatch } from 'react-redux';
 import { Button } from 'antd';
 
 import Project from '../../components/Project';
-import { StoreState } from '../../store/types';
+import { 
+  StoreState,
+  ProjectType,
+} from '../../types';
 import * as actions from '../../store/actions';
 import { log } from '../../utils';
 
 const { dialog } = remote;
 
+/**
+ * 组件属性声明
+ */
 export interface Props {
   name: string;
   enthusiasmLevel?: number;
-  onIncrement?: () => void;
-  onDecrement?: () => void;
+  projects: Array<ProjectType>;
+  onIncrement?: (path: string) => void;
+  onDecrement?: (path: string) => void;
 }
 
 export class Home extends React.Component<Props, object> {
   openProject = () => {
+    const {
+      onIncrement,
+    } = this.props;
     const file = dialog.showOpenDialog({
       properties: ['openDirectory'],
     });
     log(file);
+    if (onIncrement) {
+      onIncrement(file[0]);
+    }
   }
   render() {
+    const {
+      projects,
+    } = this.props;
     return (
       <div>
         <div className="layout__header">
@@ -34,22 +50,27 @@ export class Home extends React.Component<Props, object> {
           <Button onClick={this.openProject}>打开项目</Button>
         </div>
         <div className="projects">
-          <Project />
+          {projects.map((item: ProjectType, i: number) => <Project key={i} {...item} />)}
         </div>
       </div>
     );
   }
 }
 
-export function mapStateToProps({ enthusiasmLevel, languageName }: StoreState) {
+/**
+ * 将 store 中的数据映射到 component props 上
+ * @param param0 
+ */
+export function mapStateToProps({ enthusiasmLevel, languageName, projects }: StoreState) {
   return {
     enthusiasmLevel,
     name: languageName,
+    projects,
   };
 }
-export function mapDispatchToProps(dispatch: Dispatch<actions.EnthusiasmAction>) {
+export function mapDispatchToProps(dispatch: Dispatch<actions.AddProject>) {
   return {
-    onIncrement: () => dispatch(actions.incrementEnthusiasm()),
+    onIncrement: (payload: string) => dispatch(actions.addProject(payload)),
     onDecrement: () => dispatch(actions.decrementEnthusiasm()),
   };
 }

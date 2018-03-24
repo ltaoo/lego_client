@@ -1,18 +1,20 @@
 import * as constants from './constants';
 
-export interface IncrementEnthusiasm {
-    type: constants.INCREMENT_ENTHUSIASM;
+export interface AddProject {
+    type: constants.ADD_PROJECT;
+    payload: string;
 }
 
 export interface DecrementEnthusiasm {
     type: constants.DECREMENT_ENTHUSIASM;
 }
 
-export type EnthusiasmAction = IncrementEnthusiasm | DecrementEnthusiasm;
+export type ProjectAction = AddProject | DecrementEnthusiasm;
 
-export function incrementEnthusiasm(): IncrementEnthusiasm {
+export function addProject(payload: string): AddProject {
     return {
-        type: constants.INCREMENT_ENTHUSIASM
+        type: constants.ADD_PROJECT,
+        payload,
     };
 }
 
