@@ -6,6 +6,10 @@ import { remote, ipcRenderer } from 'electron';
  */
 export function lsPackages(global = false) {}
 
+export function log(...args) {
+    console.log(...args);
+}
+
 export function isUrl(url) {
   let matcher = /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/;
   return matcher.test(url);

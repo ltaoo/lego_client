@@ -8,7 +8,6 @@ export default function MeunItem(props) {
     <Route
       path={link}
       children={({ match }) => {
-        console.log(match);
         const cls = classNames({
           menu: true,
           'menu__link': true,
