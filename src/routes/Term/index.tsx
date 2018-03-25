@@ -12,7 +12,7 @@ import {
   log,
 } from '../../utils';
 
-interface OutputPropsType {
+interface TermPropsType {
   lines: Buffer;
 }
 
@@ -29,7 +29,7 @@ interface OutputPropsType {
 //   darkgrey: '6D7891',
 // };
 
-export default class Output extends React.Component<OutputPropsType, object> {
+export default class Output extends React.Component<TermPropsType, object> {
   term: Terminal;
   container: HTMLDivElement | null;
   componentDidMount() {
@@ -40,14 +40,9 @@ export default class Output extends React.Component<OutputPropsType, object> {
       this.term.write('hello world ' + str);
     }
   }
-  componentWillReceiveProps(nextProps: OutputPropsType) {
+  componentWillReceiveProps(nextProps: TermPropsType) {
     const { lines } = nextProps;
     log('new data');
-    // if (lines[lines.length - 1]) {
-    //   log(lines[lines.length - 1].toString());
-    //   this.term.write(lines[lines.length - 1].toString());
-    // }
-    // let win1251decoder = ('windows-1251');
     this.term.write(lines.toString());
   }
   render() {

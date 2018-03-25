@@ -1,3 +1,4 @@
+// import * as os from 'os';
 import * as cp from 'child_process';
 
 import * as React from 'react';
@@ -18,7 +19,7 @@ interface StateType {
   status: number;
   per: number;
   devUrl?: string;
-  output: Array<Buffer>;
+  output: Buffer;
   process?: Process;
 }
 
@@ -42,41 +43,66 @@ export default class ProjectItem extends React.Component<ProjectType, StateType>
       status: 0,
       per: 0,
       devUrl: undefined,
-      output: [],
+      output: new Buffer([]),
       process: undefined,
     };
+  }
+  test1 = () => {
+    // const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
+    // const ptyProcess = pty.spawn(shell, [], {
+    //   name: 'xterm-color',
+    //   cols: 80,
+    //   rows: 30,
+    //   cwd: process.env.HOME,
+    //   // env: process.env
+    // });
+
+    // ptyProcess.on('data', function(data: string) {
+    //   log(data);
+    // });
+
+    // ptyProcess.write('ls\r');
+    // ptyProcess.resize(100, 40);
+    // ptyProcess.write('ls\r');
   }
   test = () => {
     const {
       path,
     } = this.props;
-    const _port = 4000;
-    const subprocess = cp.exec(
-      `PORT=${_port} yarn start`, 
+    // const _port = 4000;
+    cp.spawn(
+      `yarn`,
+      ['start'],
       {
         cwd: path,
+        stdio: 'inherit',
       }, 
-      (error, stdout, stderr) => {
-        if (error) {
-          log(`exec error: ${error}`);
-          return;
-        }
-        log(`stdout: ${stdout}`);
-        log(`stderr: ${stderr}`);
-      }
     );
-    this.setState({
-      status: 1,
-      process: subprocess,
+    // log(subprocess);
+    process.stdout.on('data', (data: Buffer) => {
+      log(data.toString());
     });
-    subprocess.stdout.on('data', (data: Buffer) => {
-      log(data.toString('utf16le'));
-      // const msg = chalk.blue(data.toString());
-      // const msg = Buffer.from(data, 'utf16le');
-      this.setState({
-        output: this.state.output.concat([data]),
-      });
+    process.stderr.on('data', (data: Buffer) => {
+      log(data.toString());
     });
+    // );
+    // this.setState({
+    //   status: 1,
+    //   process: subprocess,
+    // });
+    // subprocess.stdout.on('data', (data: Buffer) => {
+    //   // log(data.toString('utf16le'));
+    //   log(data.toString());
+    //   this.setState({
+    //     output: data,
+    //   });
+    // });
+    // subprocess.stderr.on('data', (data: Buffer) => {
+    //   log(data.toString());
+    // });
+    // subprocess.on('close', () => {
+    //   log('exit');
+    // });
   }
   startDev = () => {
     const { path } = this.props;
