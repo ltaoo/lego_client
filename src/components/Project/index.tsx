@@ -9,7 +9,6 @@ import * as kill from 'tree-kill';
 
 import './index.css';
 import Menu from './Menu';
-import Output from '../Output';
 import { ProjectType } from '../../types';
 import {
   log,
@@ -35,7 +34,11 @@ interface Process {
   stdout: Object;
 }
 
-export default class ProjectItem extends React.Component<ProjectType, StateType> {
+interface Props extends ProjectType {
+  removeProject?: Function;
+}
+
+export default class ProjectItem extends React.Component<Props, StateType> {
   constructor(props: ProjectType) {
     super(props);
 
@@ -46,24 +49,6 @@ export default class ProjectItem extends React.Component<ProjectType, StateType>
       output: new Buffer([]),
       process: undefined,
     };
-  }
-  test1 = () => {
-    // const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
-    // const ptyProcess = pty.spawn(shell, [], {
-    //   name: 'xterm-color',
-    //   cols: 80,
-    //   rows: 30,
-    //   cwd: process.env.HOME,
-    //   // env: process.env
-    // });
-
-    // ptyProcess.on('data', function(data: string) {
-    //   log(data);
-    // });
-
-    // ptyProcess.write('ls\r');
-    // ptyProcess.resize(100, 40);
-    // ptyProcess.write('ls\r');
   }
   test = () => {
     const {
@@ -169,6 +154,18 @@ export default class ProjectItem extends React.Component<ProjectType, StateType>
     log('stop', process);
   }
 
+  removeProject = () => {
+    const {
+      removeProject,
+    } = this.props;
+    const {
+      path,
+    } = this.props;
+    if (removeProject) {
+      removeProject(path);
+    }
+  }
+
   render() {
     const {
       title,
@@ -179,6 +176,7 @@ export default class ProjectItem extends React.Component<ProjectType, StateType>
       devUrl,
       output,
     } = this.state;
+    log(output);
 
     const devBarClassName = classNames({
       'project__status': true,
@@ -232,9 +230,10 @@ export default class ProjectItem extends React.Component<ProjectType, StateType>
             </div>
           </Tooltip>}
         </div>
-        <Menu />
-        <Output
-          lines={output}
+        <Menu
+          methods={[
+            this.removeProject
+          ]}
         />
       </div>
     );

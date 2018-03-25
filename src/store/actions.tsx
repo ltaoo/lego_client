@@ -12,11 +12,12 @@ export interface AddProjectActionType {
   payload?: ProjectType;
 }
 
-export interface DecrementEnthusiasm {
-  type: constants.DECREMENT_ENTHUSIASM;
+export interface RemoveProjectType {
+  type: constants.REMOVE_PROJECT;
+  payload: string;
 }
 
-export type ProjectAction = AddProjectActionType | DecrementEnthusiasm;
+export type ProjectAction = AddProjectActionType | RemoveProjectType;
 
 export function addProject(payload: string): AddProjectActionType {
   const projectPath = payload;
@@ -45,8 +46,9 @@ export function addProject(payload: string): AddProjectActionType {
   };
 }
 
-export function decrementEnthusiasm(): DecrementEnthusiasm {
+export function removeProject(payload: string): RemoveProjectType {
   return {
-    type: constants.DECREMENT_ENTHUSIASM,
+    type: constants.REMOVE_PROJECT,
+    payload,
   };
 }

@@ -22,7 +22,7 @@ export interface Props {
   enthusiasmLevel?: number;
   projects: Array<ProjectType>;
   onIncrement?: (path: string) => void;
-  onDecrement?: (path: string) => void;
+  onDecrement: (path: string) => void;
 }
 
 export class Home extends React.Component<Props, object> {
@@ -51,7 +51,13 @@ export class Home extends React.Component<Props, object> {
           <Button onClick={this.openProject}>打开项目</Button>
         </div>
         <div className="projects">
-          {projects.map((item: ProjectType, i: number) => <Project key={i} {...item} />)}
+          {projects.map((item: ProjectType, i: number) => (
+            <Project
+              key={i} 
+              {...item} 
+              removeProject={this.props.onDecrement}
+            />
+          ))}
         </div>
       </div>
     );
@@ -72,7 +78,7 @@ export function mapStateToProps({ enthusiasmLevel, languageName, projects }: Sto
 export function mapDispatchToProps(dispatch: Dispatch<actions.AddProjectActionType>) {
   return {
     onIncrement: (payload: string) => dispatch(actions.addProject(payload)),
-    onDecrement: () => dispatch(actions.decrementEnthusiasm()),
+    onDecrement: (payload: string) => dispatch(actions.removeProject(payload)),
   };
 }
 export function mergeProps(stateProps: Object, dispatchProps: Object, ownProps: Object) {

@@ -46,7 +46,10 @@ export default function Menu(props) {
             title={<span>{menu.tip}</span>}
             overlayClassName="menu__tip"
           >
-            <span className="menu__inner">{menu.icon}</span>
+            <span 
+              className="menu__inner"
+              onClick={props.methods[i]}
+            >{menu.icon}</span>
           </Tooltip>
         </div>
       ))}
