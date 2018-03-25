@@ -3,6 +3,7 @@ const url = require('url')
 // const cp = require('child_process');
 
 const electron = require('electron')
+const opn = require('opn');
 // const pty = require('node-pty');
 
 const { ipcMain } = electron;
@@ -74,6 +75,18 @@ ipcMain.on('message', (event, ...args) => {
   // console.log(arg)  // prints "ping"
   console.log('main process', args);
   event.sender.send('reply', 'ltaoo');
+});
+ipcMain.on('open-editor', (event, path) => {
+  console.log(path, 'open editor');  // prints "ping"
+  opn(path, {
+    app: 'visual studio code',
+  });
+});
+ipcMain.on('open-term', (event, path) => {
+  console.log(path, 'open term');  // prints "ping"
+  opn(path, {
+    app: 'iterm',
+  });
 });
 
 // ipcMain.on('synchronous-message', (event, arg) => {

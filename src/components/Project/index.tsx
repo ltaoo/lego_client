@@ -6,6 +6,7 @@ import { Icon, Tooltip } from 'antd';
 import * as classNames from 'classnames';
 import * as detect from 'detect-port';
 import * as kill from 'tree-kill';
+import { shell, ipcRenderer } from 'electron';
 
 import './index.css';
 import Menu from './Menu';
@@ -165,6 +166,20 @@ export default class ProjectItem extends React.Component<Props, StateType> {
       removeProject(path);
     }
   }
+  openInTerm = () => {
+    const { path } = this.props;
+    // shell.showItemInFolder(path);
+    ipcRenderer.send('open-term', path);
+  }
+  openInEditor = () => {
+    const { path } = this.props;
+    // shell.showItemInFolder(path);
+    ipcRenderer.send('open-editor', path);
+  }
+  openInFolder = () => {
+    const { path } = this.props;
+    shell.showItemInFolder(path);
+  }
 
   render() {
     const {
@@ -232,7 +247,10 @@ export default class ProjectItem extends React.Component<Props, StateType> {
         </div>
         <Menu
           methods={[
-            this.removeProject
+            this.removeProject,
+            this.openInTerm,
+            this.openInEditor,
+            this.openInFolder,
           ]}
         />
       </div>

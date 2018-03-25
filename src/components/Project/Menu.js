@@ -6,22 +6,22 @@ const menus = [
     tip: '移除项目',
     icon: <Icon type="delete" />,
   },
-  {
-    tip: '更改代理 API',
-    icon: <Icon type="api" />,
-  },
-  {
-    tip: '项目构建',
-    icon: <Icon type="profile" />,
-  },
-  {
-    tip: '启动调试服务',
-    icon: <Icon type="play-circle-o" />,
-  },
-  {
-    tip: '新增页面',
-    icon: <Icon type="coffee" />,
-  },
+  // {
+  //   tip: '更改代理 API',
+  //   icon: <Icon type="api" />,
+  // },
+  // {
+  //   tip: '项目构建',
+  //   icon: <Icon type="profile" />,
+  // },
+  // {
+  //   tip: '启动调试服务',
+  //   icon: <Icon type="play-circle-o" />,
+  // },
+  // {
+  //   tip: '新增页面',
+  //   icon: <Icon type="coffee" />,
+  // },
   {
     tip: '在命令行中打开',
     icon: <Icon type="code-o" />,
