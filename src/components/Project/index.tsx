@@ -4,9 +4,11 @@ import * as React from 'react';
 import { Icon, Tooltip } from 'antd';
 import * as classNames from 'classnames';
 import * as detect from 'detect-port';
+import * as kill from 'tree-kill';
 
 import './index.css';
 import Menu from './Menu';
+import Output from '../Output';
 import { ProjectType } from '../../types';
 import {
   log,
@@ -16,6 +18,8 @@ interface StateType {
   status: number;
   per: number;
   devUrl?: string;
+  output: Array<Buffer>;
+  process?: Process;
 }
 
 const PROJECT_STATUS = {
@@ -23,6 +27,12 @@ const PROJECT_STATUS = {
   1: '调试服务运行中',
   2: '调试服务已停止',
 };
+
+interface Process {
+  pid: number;
+  disconnect: Function;
+  stdout: Object;
+}
 
 export default class ProjectItem extends React.Component<ProjectType, StateType> {
   constructor(props: ProjectType) {
@@ -32,7 +42,41 @@ export default class ProjectItem extends React.Component<ProjectType, StateType>
       status: 0,
       per: 0,
       devUrl: undefined,
+      output: [],
+      process: undefined,
     };
+  }
+  test = () => {
+    const {
+      path,
+    } = this.props;
+    const _port = 4000;
+    const subprocess = cp.exec(
+      `PORT=${_port} yarn start`, 
+      {
+        cwd: path,
+      }, 
+      (error, stdout, stderr) => {
+        if (error) {
+          log(`exec error: ${error}`);
+          return;
+        }
+        log(`stdout: ${stdout}`);
+        log(`stderr: ${stderr}`);
+      }
+    );
+    this.setState({
+      status: 1,
+      process: subprocess,
+    });
+    subprocess.stdout.on('data', (data: Buffer) => {
+      log(data.toString('utf16le'));
+      // const msg = chalk.blue(data.toString());
+      // const msg = Buffer.from(data, 'utf16le');
+      this.setState({
+        output: this.state.output.concat([data]),
+      });
+    });
   }
   startDev = () => {
     const { path } = this.props;
@@ -49,40 +93,54 @@ export default class ProjectItem extends React.Component<ProjectType, StateType>
         log(`port: ${port} was not occupied`);
       } else {
         log(`port: ${port} was occupied, try port: ${_port}`);
-        // const cmd = cp.spawn('yarn', ['start'], {
-        //   cwd: path,
-        //   env: Object.assign(process.env, {
-        //     PORT: _port,
-        //   }),
-        // });
-        // cmd.stdout.on('data', data => {
-        //   log(data.toString());
-        // });
+        const cmd = cp.spawn('yarn', ['start'], {
+          cwd: path,
+          env: Object.assign(process.env, {
+            PORT: _port,
+          }),
+        });
+        cmd.stdout.on('data', data => {
+          log(data.toString());
+        });
 
-        // cmd.stderr.on('data', data => {
-        //   log(`stderr: ${data}`);
-        // });
+        cmd.stderr.on('data', data => {
+          log(`stderr: ${data}`);
+        });
 
-        // cmd.on('close', code => {
-        //   log(`子进程退出码：${code}`);
-        // });
-        cp.exec(
-          `PORT=${_port} yarn start`, 
-          {
-            cwd: path,
-          }, 
-          (error, stdout, stderr) => {
-            if (error) {
-              log(`exec error: ${error}`);
-              return;
-            }
-            log(`stdout: ${stdout}`);
-            log(`stderr: ${stderr}`);
-          }
-        );
+        cmd.on('close', code => {
+          log(`子进程退出码：${code}`);
+        });
+        // cp.exec(
+        //   `PORT=${_port} yarn start`, 
+        //   {
+        //     cwd: path,
+        //   }, 
+        //   (error, stdout, stderr) => {
+        //     if (error) {
+        //       log(`exec error: ${error}`);
+        //       return;
+        //     }
+        //     log(`stdout: ${stdout}`);
+        //     log(`stderr: ${stderr}`);
+        //   }
+        // );
       }
     });
-    
+  }
+  stop = () => {
+    const {
+      process,
+    } = this.state;
+    if (process) {
+      log(process.pid);
+      log(process.pid);
+      kill(process.pid);
+      this.setState({
+        status: 0,
+        process: undefined,
+      });
+    }
+    log('stop', process);
   }
 
   render() {
@@ -93,6 +151,7 @@ export default class ProjectItem extends React.Component<ProjectType, StateType>
     const {
       status,
       devUrl,
+      output,
     } = this.state;
 
     const devBarClassName = classNames({
@@ -120,7 +179,7 @@ export default class ProjectItem extends React.Component<ProjectType, StateType>
               }
             </div>
           </div>
-          <Tooltip
+          {status === 0 ? <Tooltip
             overlayClassName="menu__tip"
             placement="left"
             title={<span>启动调试服务</span>}
@@ -128,13 +187,29 @@ export default class ProjectItem extends React.Component<ProjectType, StateType>
           >
             <div
               className="project__start"
-              onClick={this.startDev}
+              onClick={this.test}
             >
-              {status === 0 ? <Icon type="play-circle-o" /> : <Icon type="poweroff" />}
+               <Icon type="play-circle-o" />
             </div>
           </Tooltip>
+          : <Tooltip
+            overlayClassName="menu__tip"
+            placement="left"
+            title={<span>中止服务</span>}
+            mouseEnterDelay={2}
+          >
+            <div
+              className="project__start"
+              onClick={this.stop}
+            >
+              <Icon type="poweroff" />
+            </div>
+          </Tooltip>}
         </div>
         <Menu />
+        <Output
+          lines={output}
+        />
       </div>
     );
   }

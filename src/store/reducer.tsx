@@ -15,7 +15,7 @@ export default function enthusiasm(
       log(action.payload);
       return {
         ...state,
-        projects: state.projects.concat([action.payload]),
+        projects: state.projects.concat([action.payload]).filter(item => !!item),
       };
     case DECREMENT_ENTHUSIASM:
       return {

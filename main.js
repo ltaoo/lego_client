@@ -1,11 +1,12 @@
+const path = require('path')
+const url = require('url')
+// const cp = require('child_process');
+
 const electron = require('electron')
 // Module to control application life.
 const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
-
-const path = require('path')
-const url = require('url')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -65,3 +66,22 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+// const {ipcMain} = require('electron')
+// ipcMain.on('asynchronous-message', (event, ...args) => {
+//   // console.log(arg)  // prints "ping"
+//   console.log('main process', args, process.env);
+//     const _port = args[0];
+//     const path = args[1];
+//     const cmd = cp.spawn('npm', ['--help'], {
+//       cwd: path,
+//       env: Object.assign({}, process.env, {
+//         PORT: _port,
+//       }),
+//     });
+//     event.sender.send('asynchronous-reply', cmd);
+// })
+
+// ipcMain.on('synchronous-message', (event, arg) => {
+//   console.log(arg)  // prints "ping"
+//   event.returnValue = 'pong'
+// })
