@@ -55,40 +55,42 @@ export default class ProjectItem extends React.Component<Props, StateType> {
     const {
       path,
     } = this.props;
-    // const _port = 4000;
-    cp.spawn(
-      `yarn`,
-      ['start'],
-      {
-        cwd: path,
-        stdio: 'inherit',
-      }, 
-    );
-    // log(subprocess);
-    process.stdout.on('data', (data: Buffer) => {
-      log(data.toString());
+    const port = 3000;
+    detect(port, (err, _port) => {
+      if (err) {
+        log(err);
+      }
+      if (port === _port) {
+        log(`port: ${port} was not occupied`);
+      } else {
+        const subprocess = cp.exec(
+          `PORT=${_port} yarn start`, 
+          {
+            cwd: path,
+          }, 
+          (error, stdout, stderr) => {
+            if (error) {
+              log(`exec error: ${error}`);
+              return;
+            }
+            log(`stdout: ${stdout}`);
+            log(`stderr: ${stderr}`);
+          }
+        );
+        this.setState({
+          status: 1,
+          process: subprocess,
+        });
+        subprocess.stdout.on('data', (data: Buffer) => {
+          log(data.toString());
+          // const msg = chalk.blue(data.toString());
+          // const msg = Buffer.from(data, 'utf16le');
+          // this.setState({
+            // output: this.state.output.concat([data]),
+          // });
+        });
+      }
     });
-    process.stderr.on('data', (data: Buffer) => {
-      log(data.toString());
-    });
-    // );
-    // this.setState({
-    //   status: 1,
-    //   process: subprocess,
-    // });
-    // subprocess.stdout.on('data', (data: Buffer) => {
-    //   // log(data.toString('utf16le'));
-    //   log(data.toString());
-    //   this.setState({
-    //     output: data,
-    //   });
-    // });
-    // subprocess.stderr.on('data', (data: Buffer) => {
-    //   log(data.toString());
-    // });
-    // subprocess.on('close', () => {
-    //   log('exit');
-    // });
   }
   startDev = () => {
     const { path } = this.props;

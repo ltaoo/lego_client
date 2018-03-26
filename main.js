@@ -4,7 +4,7 @@ const url = require('url')
 
 const electron = require('electron')
 const opn = require('opn');
-// const pty = require('node-pty');
+const pty = require('node-pty');
 
 const { ipcMain } = electron;
 // Module to control application life.
@@ -94,15 +94,18 @@ ipcMain.on('open-term', (event, path) => {
 //   event.returnValue = 'pong'
 // })
 
-// const term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', [], {
-//   name: 'xterm-color',
-//   cols: cols || 80,
-//   rows: rows || 24,
-//   cwd: process.env.PWD,
-//   env: process.env
-// });
-// ptyProcess.on('data', data => {
-//   if (this.xterm) {
-//     this.xterm.write(data);
-//   }
-// });
+const term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', [], {
+  name: 'xterm-color',
+  cols: cols || 80,
+  rows: rows || 24,
+  cwd: process.env.PWD,
+  env: process.env
+});
+ptyProcess.on('data', data => {
+  console.log(data.toString());
+});
+ipcMain.on('exec', (event, cmd) => {
+  // console.log(arg)  // prints "ping"
+  term.write(cmd);
+  event.sender.send('reply', ptyProcess);
+});
