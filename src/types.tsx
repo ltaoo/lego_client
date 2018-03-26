@@ -18,7 +18,5 @@ export interface Registry {
 }
 
 export interface StoreState {
-  languageName: string;
-  enthusiasmLevel: number;
   projects: object;
 }

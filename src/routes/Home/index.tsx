@@ -70,10 +70,8 @@ export class Home extends React.Component<Props, object> {
  * 将 store 中的数据映射到 component props 上
  * @param param0 
  */
-export function mapStateToProps({ enthusiasmLevel, languageName, projects }: StoreState) {
+export function mapStateToProps({ projects }: StoreState) {
   return {
-    enthusiasmLevel,
-    name: languageName,
     projects,
   };
 }

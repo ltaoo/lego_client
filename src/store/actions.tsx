@@ -44,6 +44,12 @@ export function addProject(payload: string): AddProjectActionType | AddProjectFa
     path: projectPath,
     data: jsonData,
   };
+  // todo: 检查是否已存在并提示
+  const oldProjects = JSON.parse(localStorage.getItem('projects') || '{}');
+  const newProjects = Object.assign({}, oldProjects, {
+    [projectPath]: data,
+  });
+  localStorage.setItem('projects', JSON.stringify(newProjects));
   return {
     type: constants.ADD_PROJECT,
     payload: data,
@@ -51,6 +57,9 @@ export function addProject(payload: string): AddProjectActionType | AddProjectFa
 }
 
 export function removeProject(payload: string): RemoveProjectType {
+  const oldProjects = JSON.parse(localStorage.getItem('projects') || '{}');
+  delete oldProjects[payload];
+  localStorage.setItem('projects', JSON.stringify(oldProjects));
   return {
     type: constants.REMOVE_PROJECT,
     payload,
