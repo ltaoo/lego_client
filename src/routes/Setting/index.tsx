@@ -114,10 +114,10 @@ class Setting extends React.Component<Props, object> {
             dataSource={nodeModules}
             renderItem={(item: Package) => (
               <List.Item
-                actions={[<a key={0}>update</a>, <a key={1}>delete</a>]}
+                // actions={[<a key={0}>update</a>, <a key={1}>delete</a>]}
               >
                 <List.Item.Meta
-                  title={<a href="https://ant.design">{item.name}</a>}
+                  title={<span>{item.name}</span>}
                 />
               </List.Item>
             )}

@@ -17,6 +17,10 @@ export interface Registry {
   active: boolean;
 }
 
+export interface PtyProcess {
+  on: Function;
+}
+
 export interface StoreState {
   projects: object;
 }

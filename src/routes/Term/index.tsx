@@ -1,11 +1,8 @@
 import * as React from 'react';
-import {
-  Button,
-} from 'antd';
 import { ipcRenderer } from 'electron';
 // import * as pty from 'node-pty';
 // import { XTerm, Terminal } from './Panel';
-import { XTerm } from './Panel';
+import XTerm from './XtermWindow';
 import { ResizableBox } from 'react-resizable';
 // import * as throttle from 'lodash.throttle';
 import {
@@ -26,7 +23,7 @@ export default class Main extends React.Component<Props, State> {
     if (this.xterm) {
       runFakeTerminal(this.xterm);
     }
-    ipcRenderer.send('message', 'ping');
+    ipcRenderer.send('xterm', 'ping');
     ipcRenderer.on('reply', (event, arg) => {
       log(arg); // prints "pong"
     });
@@ -39,7 +36,7 @@ export default class Main extends React.Component<Props, State> {
   }
   render() {
     return (
-      <div>
+      <div className="page__content">
         <ResizableBox
           width={200}
           height={200}
@@ -47,11 +44,10 @@ export default class Main extends React.Component<Props, State> {
             overflow: 'hidden',
           }}
         >
-          <Button onClick={this.sendMsg}>test</Button>
           <XTerm
             ref={xterm => (this.xterm = xterm)}
+            addons={['fit', 'fullscreen', 'search']}
             style={{
-              addons: ['fit', 'fullscreen', 'search'],
               overflow: 'hidden',
               position: 'relative',
               width: '100%',

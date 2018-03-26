@@ -96,16 +96,17 @@ ipcMain.on('open-term', (event, path) => {
 
 const term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', [], {
   name: 'xterm-color',
-  cols: cols || 80,
-  rows: rows || 24,
+  // cols: cols || 80,
+  // rows: rows || 24,
   cwd: process.env.PWD,
   env: process.env
 });
-ptyProcess.on('data', data => {
-  console.log(data.toString());
+ipcMain.on('init-message', (event) => {
+  term.on('data', data => {
+    console.log(data);
+    event.sender.send('init-reply', data);
+  });
 });
-ipcMain.on('exec', (event, cmd) => {
-  // console.log(arg)  // prints "ping"
+ipcMain.on('xterm', (event, cmd) => {
   term.write(cmd);
-  event.sender.send('reply', ptyProcess);
 });
