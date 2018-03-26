@@ -1,6 +1,6 @@
 import { StoreState } from '../types';
 import { ProjectAction } from '../store/actions';
-import { ADD_PROJECT, REMOVE_PROJECT } from '../store/constants';
+import { ADD_PROJECT, REMOVE_PROJECT, ADD_PROJECT_FAIL } from '../store/constants';
 
 export default function enthusiasm(
   state: StoreState,
@@ -11,12 +11,21 @@ export default function enthusiasm(
     case ADD_PROJECT:
       return {
         ...state,
-        projects: state.projects.concat([action.payload]).filter(item => !!item),
+        projects: {
+            ...state.projects,
+            [action.payload.path]: action.payload,
+        },
       };
+    // 添加项目失败
+    case ADD_PROJECT_FAIL:
+      return state;
+    // 移除项目
     case REMOVE_PROJECT:
+      const tempProject = {...state.projects};
+      delete tempProject[action.payload];
       return {
         ...state,
-        projects: state.projects.filter((item) => item && (item.path !== action.payload)),
+        projects: tempProject,
       };
     default:
       return state;

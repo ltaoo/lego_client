@@ -7,7 +7,6 @@ import withStack from '../../components/PageStack/withStack';
 import Project from '../../components/Project';
 import { 
   StoreState,
-  ProjectType,
 } from '../../types';
 import * as actions from '../../store/actions';
 import { log } from '../../utils';
@@ -20,22 +19,25 @@ const { dialog } = remote;
 export interface Props {
   name: string;
   enthusiasmLevel?: number;
-  projects: Array<ProjectType>;
-  onIncrement?: (path: string) => void;
-  onDecrement: (path: string) => void;
+  projects: object;
+  addProject?: (path: string) => void;
+  removeProject: (path: string) => void;
 }
 
 export class Home extends React.Component<Props, object> {
+  /**
+   * 选择项目弹窗
+   */
   openProject = () => {
     const {
-      onIncrement,
+      addProject,
     } = this.props;
     const file = dialog.showOpenDialog({
       properties: ['openDirectory'],
     });
     log(file);
-    if (onIncrement) {
-      onIncrement(file[0]);
+    if (addProject && file && file[0]) {
+      addProject(file[0]);
     }
   }
   render() {
@@ -51,11 +53,11 @@ export class Home extends React.Component<Props, object> {
           <Button onClick={this.openProject}>打开项目</Button>
         </div>
         <div className="projects">
-          {projects.map((item: ProjectType, i: number) => (
+          {Object.keys(projects).map((key: string, i: number) => (
             <Project
               key={i} 
-              {...item} 
-              removeProject={this.props.onDecrement}
+              {...projects[key]} 
+              removeProject={this.props.removeProject}
             />
           ))}
         </div>
@@ -77,8 +79,8 @@ export function mapStateToProps({ enthusiasmLevel, languageName, projects }: Sto
 }
 export function mapDispatchToProps(dispatch: Dispatch<actions.AddProjectActionType>) {
   return {
-    onIncrement: (payload: string) => dispatch(actions.addProject(payload)),
-    onDecrement: (payload: string) => dispatch(actions.removeProject(payload)),
+    addProject: (payload: string) => dispatch(actions.addProject(payload)),
+    removeProject: (payload: string) => dispatch(actions.removeProject(payload)),
   };
 }
 export function mergeProps(stateProps: Object, dispatchProps: Object, ownProps: Object) {

@@ -9,7 +9,7 @@ import { log } from '../utils';
 
 export interface AddProjectActionType {
   type: constants.ADD_PROJECT;
-  payload?: ProjectType;
+  payload: ProjectType;
 }
 
 export interface RemoveProjectType {
@@ -17,9 +17,13 @@ export interface RemoveProjectType {
   payload: string;
 }
 
-export type ProjectAction = AddProjectActionType | RemoveProjectType;
+export interface AddProjectFailActionType {
+  type: constants.ADD_PROJECT_FAIL;
+}
 
-export function addProject(payload: string): AddProjectActionType {
+export type ProjectAction = AddProjectActionType | RemoveProjectType | AddProjectFailActionType;
+
+export function addProject(payload: string): AddProjectActionType | AddProjectFailActionType {
   const projectPath = payload;
   // 判断该文件夹下 package.json 文件是否存在
   const packagePath = path.resolve(projectPath, 'package.json');
@@ -28,7 +32,7 @@ export function addProject(payload: string): AddProjectActionType {
   if (!exist) {
     message.error('该项目内没有 package.json 配置文件，请检查后重试');
     return {
-      type: constants.ADD_PROJECT,
+      type: constants.ADD_PROJECT_FAIL,
     };
   }
   // 解析 package.json 获取文件名、版本等信息
