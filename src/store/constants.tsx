@@ -6,3 +6,24 @@ export type REMOVE_PROJECT = typeof REMOVE_PROJECT;
 
 export const ADD_PROJECT_FAIL = 'ADD_PROJECT_FAIL';
 export type ADD_PROJECT_FAIL = typeof ADD_PROJECT_FAIL;
+
+export const EMPTY_PAGE = 'EMPTY_PAGE';
+export type EMPTY_PAGE = typeof EMPTY_PAGE;
+
+export const ADD_COMPONENT = 'ADD_COMPONENT';
+export type ADD_COMPONENT = typeof ADD_COMPONENT;
+
+export const UPDATE_COMPONENT = 'UPDATE_COMPONENT';
+export type UPDATE_COMPONENT = typeof UPDATE_COMPONENT;
+
+export const REMOVE_COMPONENT = 'REMOVE_COMPONENT';
+export type REMOVE_COMPONENT = typeof REMOVE_COMPONENT;
+
+export const SORT = 'SORT';
+export type SORT = typeof SORT;
+
+export const APPEND_COMPONENT = 'APPEND_COMPONENT';
+export type APPEND_COMPONENT = typeof APPEND_COMPONENT;
+
+export const REPLACE_INSTANCES = 'REPLACE_INSTANCES';
+export type REPLACE_INSTANCES = typeof REPLACE_INSTANCES;

@@ -13,12 +13,7 @@ import { ipcRenderer } from 'electron';
 
 import * as className from 'classnames';
 
-// import { PtyProcess } from '../../types';
-
-// const debounce = require('lodash.debounce');
-// import styles from 'xterm/xterm.css';
-// require ('xterm/xterm.css');
-import { log } from '../../utils';
+// import { log } from '../../utils';
 
 interface ExtendTerminal extends Terminal {
   fit?: Function;
@@ -94,22 +89,7 @@ export default class TerminalWindow extends React.Component<
       isFocused: false,
     };
   }
-
-  applyAddon(addon: object) {
-    Terminal.applyAddon(addon);
-  }
   componentDidMount() {
-    // const { addons } = this.props;
-    // log(addons);
-    // if (addons) {
-    //   for (let i = 0, l = addons.length; i < l; i += 1) {
-    //     const item = addons[i];
-    //     const modulePath = `xterm/dist/addons/${item}/${item}`;
-    //     log(item, modulePath);
-    //     const addon = require(modulePath.toString());
-    //     log(addon);
-    //   }
-    // }
     Terminal.applyAddon(fit);
     Terminal.applyAddon(search);
     Terminal.applyAddon(fullscreen);
@@ -120,7 +100,6 @@ export default class TerminalWindow extends React.Component<
     if (this.container) {
       this.term.open(this.container);
       this.term.focus();
-      log(this.term.fit);
       if (this.term.fit) {
         this.term.fit();
       }
@@ -130,30 +109,21 @@ export default class TerminalWindow extends React.Component<
       if (this.term.webLinksInit) {
         this.term.webLinksInit();
       }
+      runFakeTerminal(this.term, this);
       this.term.on('focus', this.focusChanged.bind(this, true));
       this.term.on('blur', this.focusChanged.bind(this, false));
-      // 初始化 pty
       ipcRenderer.on('init-reply', (event, data) => {
-        log(data); // prints "pong"
+        if (data.length === 1) {
+          return;
+        }
         this.term.write(data);
-        // arg.on('data', (data: string) => {
-        //   log(data);
-        // });
       });
       ipcRenderer.send('init-message');
-      // const pty = ipcRenderer.send('init-xterm');
-      // pty.on('data', (data: string) => {
-      //   this.term.write(data);
-      // });
-      // ipcRenderer.on('init-success', (pty: PtyProcess) => {
-      //   log(pty);
-      // });
       // 发送命令
       this.term.on('data', (data: string) => {
         // this.term.write(data);
         ipcRenderer.send('xterm', data);
       });
-      runFakeTerminal(this.term, this);
     }
   }
   componentWillUnmount() {

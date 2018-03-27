@@ -18,10 +18,10 @@ const menus = [
   //   tip: '启动调试服务',
   //   icon: <Icon type="play-circle-o" />,
   // },
-  // {
-  //   tip: '新增页面',
-  //   icon: <Icon type="coffee" />,
-  // },
+  {
+    tip: '新增页面',
+    icon: <Icon type="coffee" />,
+  },
   {
     tip: '在命令行中打开',
     icon: <Icon type="code-o" />,

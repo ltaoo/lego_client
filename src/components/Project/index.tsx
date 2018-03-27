@@ -6,11 +6,10 @@ import { Icon, Tooltip } from 'antd';
 import * as classNames from 'classnames';
 import * as detect from 'detect-port';
 import * as kill from 'tree-kill';
-import { shell, ipcRenderer } from 'electron';
+import { shell, ipcRenderer, remote } from 'electron';
 
 import './index.css';
 import Menu from './Menu';
-import { ProjectType } from '../../types';
 import {
   log,
 } from '../../utils';
@@ -23,12 +22,6 @@ interface StateType {
   process?: Process;
 }
 
-const PROJECT_STATUS = {
-  0: '未启动调试服务',
-  1: '调试服务运行中',
-  2: '调试服务已停止',
-};
-
 interface Process {
   pid: number;
   disconnect: Function;
@@ -38,6 +31,14 @@ interface Process {
 interface Props extends ProjectType {
   removeProject?: Function;
 }
+
+const PROJECT_STATUS = {
+  0: '未启动调试服务',
+  1: '调试服务运行中',
+  2: '调试服务已停止',
+};
+
+const { BrowserWindow } = remote;
 
 export default class ProjectItem extends React.Component<Props, StateType> {
   constructor(props: ProjectType) {
@@ -157,6 +158,14 @@ export default class ProjectItem extends React.Component<Props, StateType> {
     log('stop', process);
   }
 
+  /** 
+   * 增加页面
+   */
+  createPage = () => {
+    const win = new BrowserWindow({width: 800, height: 600});
+    win.loadURL('http://127.0.0.1:3000/create');
+  }
+
   removeProject = () => {
     const {
       removeProject,
@@ -250,6 +259,7 @@ export default class ProjectItem extends React.Component<Props, StateType> {
         <Menu
           methods={[
             this.removeProject,
+            this.createPage,
             this.openInTerm,
             this.openInEditor,
             this.openInFolder,

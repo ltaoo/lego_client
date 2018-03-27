@@ -9,6 +9,7 @@ import FakeMenu from '../components/FakeMenu';
 import Home from '../routes/Home/index';
 import Setting from '../routes/Setting/index';
 import Term from '../routes/Term/index';
+import Generator from '../routes/PageGenerator/index';
 
 const menus = [
   {
@@ -34,6 +35,7 @@ const routes = function getRoutes() {
       <Route exact={true} path="/" component={Home} />
       <Route path="/setting" component={Setting} />
       <Route path="/term" component={Term} />
+      <Route path="/create" component={Generator} />
     </Switch>
   );
 };

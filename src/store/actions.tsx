@@ -3,9 +3,21 @@ import * as fs from 'fs';
 
 import { message } from 'antd';
 
-import { ProjectType } from '../types';
 import * as constants from './constants';
 import { log } from '../utils';
+
+interface UpdatePayload {
+  uuid: number;
+  values: object;
+}
+interface RemovePayload {
+  uuid: number;
+  values: object;
+}
+interface SortPayload {
+  dragIndex: number;
+  hoverIndex: number;
+}
 
 export interface AddProjectActionType {
   type: constants.ADD_PROJECT;
@@ -21,7 +33,50 @@ export interface AddProjectFailActionType {
   type: constants.ADD_PROJECT_FAIL;
 }
 
-export type ProjectAction = AddProjectActionType | RemoveProjectType | AddProjectFailActionType;
+export interface AddComponentComonentType {
+  type: constants.ADD_COMPONENT;
+  payload: FakeComponent;
+}
+
+export interface UpdateComponent {
+  type: constants.UPDATE_COMPONENT;
+  payload: UpdatePayload;
+}
+
+export interface RemoveComponent {
+  type: constants.REMOVE_COMPONENT;
+  payload: RemovePayload;
+}
+
+export interface AppendComponent {
+  type: constants.APPEND_COMPONENT;
+  payload: SortPayload;
+}
+
+export interface ReplaceComponent {
+  type: constants.REPLACE_INSTANCES;
+}
+
+export interface EmptyPage {
+  type: constants.EMPTY_PAGE;
+}
+
+export interface Sort {
+  type: constants.SORT;
+  payload: SortPayload;
+}
+
+export type ProjectAction = 
+  AddProjectActionType 
+  | RemoveProjectType 
+  | AddComponentComonentType 
+  | UpdateComponent
+  | RemoveComponent
+  | AppendComponent
+  | ReplaceComponent
+  | EmptyPage
+  | Sort
+  ;
 
 export function addProject(payload: string): AddProjectActionType | AddProjectFailActionType {
   const projectPath = payload;
@@ -63,5 +118,11 @@ export function removeProject(payload: string): RemoveProjectType {
   return {
     type: constants.REMOVE_PROJECT,
     payload,
+  };
+}
+
+export function emptyPage () {
+  return {
+    type: constants.EMPTY_PAGE,
   };
 }

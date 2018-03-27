@@ -1,5 +1,5 @@
 /**
- * @file 支持自定义数量的 Input
+ * @file 支持自定义数量的 Input，并可「选择」
  * @author wuya
  */
 import * as React from 'react';
@@ -13,8 +13,6 @@ import {
   Switch,
 } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
-
-import { Registry } from '../../types';
 
 let uuid = 0;
 

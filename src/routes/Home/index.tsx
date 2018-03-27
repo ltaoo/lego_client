@@ -5,9 +5,6 @@ import { Button } from 'antd';
 
 import withStack from '../../components/PageStack/withStack';
 import Project from '../../components/Project';
-import { 
-  StoreState,
-} from '../../types';
 import * as actions from '../../store/actions';
 import { log } from '../../utils';
 
