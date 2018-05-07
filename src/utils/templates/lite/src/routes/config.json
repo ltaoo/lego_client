@@ -1,0 +1,26 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "name": "首页",
+      "icon": "home",
+      "exact": true,
+      "childRoutes": [],
+      "component": "HeaderAsideFooterLayout",
+      "indexRoute": "Home"
+    },
+    {
+      "path": "/login",
+      "name": "登录",
+      "component": "UserLayout",
+      "indexRoute": "Login"
+    },
+    {
+      "path": "/activity",
+      "icon": "calendar",
+      "name": "活动报名",
+      "component": "HeaderAsideFooterLayout",
+      "indexRoute": "Activity"
+    }
+  ]
+}

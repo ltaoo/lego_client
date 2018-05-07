@@ -1,7 +1,9 @@
+import * as fs from 'fs';
+
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 
-import { Layout, Button, Form, Modal } from 'antd';
+import { Layout, Button, Form, Modal, Input } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -17,6 +19,9 @@ import createSourceCode from '../../common/create-source';
 import createPageCode from '../../common/create-page';
 import createZip from '../../common/create-zip';
 import renderComponent from '../../common/renderComponent';
+import {
+  log,
+} from '../../utils';
 // import { createInstances } from '../../common/util';
 import './index.css';
 
@@ -29,6 +34,7 @@ interface GeneratorPageProps extends FormComponentProps {
 interface GeneratorPageState {
   codeVisible: boolean;
   previewModalVisible: boolean;
+  newPageModalVisible: boolean;
   code: string;
 }
 
@@ -39,6 +45,7 @@ class Generator extends React.Component<GeneratorPageProps, GeneratorPageState> 
     this.state = {
       codeVisible: false,
       previewModalVisible: false,
+      newPageModalVisible: false,
       code: '',
     };
   }
@@ -86,14 +93,27 @@ class Generator extends React.Component<GeneratorPageProps, GeneratorPageState> 
   /**
    * 下载单个文件
    */
-  downloadSingleFile = () => {
+  createPage = () => {
     const code = this.createCode();
-    const blobObj = new Blob([code]);
-    const downloadUrl = URL.createObjectURL(blobObj);
-    const aTag = document.createElement('a');
-    aTag.href = downloadUrl;
-    aTag.download = 'Page.js';
-    aTag.click();
+    const { getFieldValue } = this.props.form;
+    const fileName = getFieldValue('file');
+    fs.writeFile(`/Users/ltaoo/Documents/react/ice-test/src/pages/${fileName}.js`, code, (err: Error) => {
+      if (err) {
+        log(err);
+        return;
+      }
+      this.hideNewPageModal();
+    });
+  }
+  showNewPageModal = () => {
+    this.setState({
+      newPageModalVisible: true,
+    });
+  }
+  hideNewPageModal = () => {
+    this.setState({
+      newPageModalVisible: false,
+    });
   }
   showCodeModal = cb => {
     this.setState(
@@ -126,9 +146,11 @@ class Generator extends React.Component<GeneratorPageProps, GeneratorPageState> 
     const {
       codeVisible,
       previewModalVisible,
+      newPageModalVisible,
       code,
     } = this.state;
-    const { instances } = this.props;
+    const { instances, form } = this.props;
+    const { getFieldDecorator } = form;
     return (
       <Layout style={{ height: '100vh' }}>
         <Sider>
@@ -153,12 +175,9 @@ class Generator extends React.Component<GeneratorPageProps, GeneratorPageState> 
             <Button
               style={{ marginLeft: 20 }}
               type="primary"
-              onClick={this.downloadSingleFile}
+              onClick={this.showNewPageModal}
             >
-              下载单个文件
-            </Button>
-            <Button style={{ marginLeft: 20 }} onClick={this.createZip}>
-              生成代码压缩包
+              生成文件
             </Button>
             <Button style={{ marginLeft: 20 }} onClick={this.emptyCompnents}>
               清空页面
@@ -196,6 +215,23 @@ class Generator extends React.Component<GeneratorPageProps, GeneratorPageState> 
           width="90%"
         >
           {previewModalVisible && renderComponent(instances, this.props)}
+        </Modal>
+        <Modal
+          title="新页面名"
+          visible={newPageModalVisible}
+          onOk={this.createPage}
+          onCancel={this.hideNewPageModal}
+        >
+          <Form.Item label="文件名">
+            {getFieldDecorator('file')(
+              <Input />
+            )}
+          </Form.Item>
+          <Form.Item label="路径">
+            {getFieldDecorator('path')(
+              <Input />
+            )}
+          </Form.Item>
         </Modal>
       </Layout>
     );

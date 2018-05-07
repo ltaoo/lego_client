@@ -1,5 +1,9 @@
 import { remote, ipcRenderer } from 'electron';
 
+import _createProject from './createProject';
+
+export const createProject = _createProject;
+
 /**
  * 列出安装的包
  * @param {*} global - 是否全局

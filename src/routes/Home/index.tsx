@@ -1,12 +1,14 @@
+import * as fs from 'fs';
+
 import * as React from 'react';
 import { remote } from 'electron';
 import { connect, Dispatch } from 'react-redux';
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
 
 import withStack from '../../components/PageStack/withStack';
 import Project from '../../components/Project';
 import * as actions from '../../store/actions';
-import { log } from '../../utils';
+import { log, createProject } from '../../utils';
 
 const { dialog } = remote;
 
@@ -22,6 +24,34 @@ export interface Props {
 }
 
 export class Home extends React.Component<Props, object> {
+  /** 
+   * 新增项目弹窗
+   */
+  createProject = () => {
+    const file = dialog.showOpenDialog({
+      properties: ['openDirectory', 'createDirectory'],
+    });
+    log(file);
+    if (!file) {
+      return;
+    }
+    // 检查是否为空目录
+    fs.readdir(file[0], (err, files) => {
+      if (err) {
+        log(err);
+        return;
+      }
+      const count = files.length;
+      if (count !== 0) {
+        Modal.error({
+          content: '请选择空目录',
+        });
+        return;
+      }
+      // create project
+      createProject(file[0], 1);
+    });
+  }
   /**
    * 选择项目弹窗
    */
@@ -44,7 +74,7 @@ export class Home extends React.Component<Props, object> {
     return (
       <div>
         <div className="layout__header">
-          <Button type="primary" className="create-project">
+          <Button type="primary" className="create-project" onClick={this.createProject}>
             创建项目
           </Button>
           <Button onClick={this.openProject}>打开项目</Button>
