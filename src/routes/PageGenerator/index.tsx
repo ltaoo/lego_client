@@ -1,9 +1,11 @@
 import * as fs from 'fs';
+import * as path from 'path';
 
+import { remote } from 'electron';
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
-
-import { Layout, Button, Form, Modal, Input } from 'antd';
+import qs from 'qs';
+import { Layout, Button, Form, Modal } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -26,6 +28,7 @@ import {
 import './index.css';
 
 const { Header, Content, Footer, Sider } = Layout;
+const { BrowserWindow } = remote;
 
 interface GeneratorPageProps extends FormComponentProps {
   instances: Array<FakeComponent>;
@@ -34,7 +37,6 @@ interface GeneratorPageProps extends FormComponentProps {
 interface GeneratorPageState {
   codeVisible: boolean;
   previewModalVisible: boolean;
-  newPageModalVisible: boolean;
   code: string;
 }
 
@@ -45,7 +47,6 @@ class Generator extends React.Component<GeneratorPageProps, GeneratorPageState> 
     this.state = {
       codeVisible: false,
       previewModalVisible: false,
-      newPageModalVisible: false,
       code: '',
     };
   }
@@ -95,24 +96,17 @@ class Generator extends React.Component<GeneratorPageProps, GeneratorPageState> 
    */
   createPage = () => {
     const code = this.createCode();
-    const { getFieldValue } = this.props.form;
-    const fileName = getFieldValue('file');
-    fs.writeFile(`/Users/ltaoo/Documents/react/ice-test/src/pages/${fileName}.js`, code, (err: Error) => {
+    const search = qs.parse(location.search, { ignoreQueryPrefix: true });
+    log(qs.parse(location.search, { ignoreQueryPrefix: true }), code, fs);
+    // const { getFieldValue } = this.props.form;
+    // const fileName = getFieldValue('file');
+    fs.writeFile(path.join(search.project, 'src/pages', search.path, 'index.js'), code, (err: Error) => {
       if (err) {
         log(err);
         return;
       }
-      this.hideNewPageModal();
-    });
-  }
-  showNewPageModal = () => {
-    this.setState({
-      newPageModalVisible: true,
-    });
-  }
-  hideNewPageModal = () => {
-    this.setState({
-      newPageModalVisible: false,
+      const currentWin = BrowserWindow.getFocusedWindow();
+      currentWin.close();
     });
   }
   showCodeModal = cb => {
@@ -146,11 +140,9 @@ class Generator extends React.Component<GeneratorPageProps, GeneratorPageState> 
     const {
       codeVisible,
       previewModalVisible,
-      newPageModalVisible,
       code,
     } = this.state;
-    const { instances, form } = this.props;
-    const { getFieldDecorator } = form;
+    const { instances } = this.props;
     return (
       <Layout style={{ height: '100vh' }}>
         <Sider>
@@ -175,7 +167,7 @@ class Generator extends React.Component<GeneratorPageProps, GeneratorPageState> 
             <Button
               style={{ marginLeft: 20 }}
               type="primary"
-              onClick={this.showNewPageModal}
+              onClick={this.createPage}
             >
               生成文件
             </Button>
@@ -215,23 +207,6 @@ class Generator extends React.Component<GeneratorPageProps, GeneratorPageState> 
           width="90%"
         >
           {previewModalVisible && renderComponent(instances, this.props)}
-        </Modal>
-        <Modal
-          title="新页面名"
-          visible={newPageModalVisible}
-          onOk={this.createPage}
-          onCancel={this.hideNewPageModal}
-        >
-          <Form.Item label="文件名">
-            {getFieldDecorator('file')(
-              <Input />
-            )}
-          </Form.Item>
-          <Form.Item label="路径">
-            {getFieldDecorator('path')(
-              <Input />
-            )}
-          </Form.Item>
         </Modal>
       </Layout>
     );
