@@ -33,3 +33,4 @@ declare interface StoreState {
 
 declare var prettier;
 declare var hljs;
+declare var __static;

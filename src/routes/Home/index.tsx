@@ -49,7 +49,15 @@ export class Home extends React.Component<Props, object> {
         return;
       }
       // create project
-      createProject(file[0], 1);
+      createProject(file[0], 1)
+        .then((res) => {
+          Modal.success({
+            content: '创建成功'
+          });
+        })
+        .catch((e) => {
+          log(e);
+        });
     });
   }
   /**
