@@ -33,7 +33,7 @@ export default function (params = {}) {
     extra: 'const { Group: CheckboxGroup } = Checkbox;',
     stateCode: `options${uuid}:`,
     renderCode: `options${uuid}`,
-    constructorCode: 'this.handleClick = this.handleClick.bind(this);',
+    // constructorCode: 'this.handleClick = this.handleClick.bind(this);',
     methods: `
     onChange (val) {
       console.log(val);

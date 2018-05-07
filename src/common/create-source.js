@@ -8,6 +8,7 @@ const nativeMethods = ['onClick', 'onChange', 'onInput', 'onOk', 'onCancel'];
 const IGNORE_ITEMS = ['children'];
 const MERGED_PROPS = ['options', 'dataSource', 'columns', 'visible', 'renderItem'];
 
+// 处理属性转换为字符串
 const HANDLER = {
   string(key, val) {
     return `${key}="${val}"`;

@@ -201,33 +201,44 @@ export default function createPageCode(instances = [], code, name) {
       ${stateCode}
     };}` : '';
 
-  return `import React, { Component } from 'react';
-import {
-  Form,
-  ${componentCode}
-} from 'antd';
+  let resCode = `import React, { Component } from 'react';
+  import {
+    Form,
+    ${componentCode}
+  } from 'antd';
 
-${extraComponentCode}
+  ${extraComponentCode}
 
-class ${name} extends Component {
-  ${constructorCode}
-  componentDidMount() {
-    ${didMountCode}
+  class ${name} extends Component {
+    ${constructorCode}
+  `;
+  if (didMountCode) {
+    resCode +=
+    `componentDidMount() {
+      ${didMountCode}
+    }`;
   }
-  ${methodsCode}
-  render() {
-    const { form } = this.props;
-    const {
-      ${renderCode}
-     } = this.state;
-    const { getFieldDecorator } = form;
-    return (
-      <div>
-        ${code}
-      </div>
-    );
+  resCode +=
+    `${methodsCode}
+    render() {
+      const { form } = this.props;
+    `;
+  if (renderCode) {
+    resCode +=
+      `const {
+        ${renderCode}
+      } = this.state;
+      `;
   }
-}
-
-export default Form.create()(${name});`;
+      
+  resCode += `const { getFieldDecorator } = form;
+      return (
+        <div>
+          ${code}
+        </div>
+      );
+    }
+  }
+  export default Form.create()(${name});`;
+  return resCode;
 }

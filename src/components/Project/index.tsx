@@ -220,12 +220,16 @@ class ProjectItem extends React.Component<Props, StateType> {
         return;
       }
       const content = res.toString();
-      log(content);
-      this.originConfig = JSON.parse(content);
-      this.setState({
-        navs: getNavs(this.originConfig.routes),
-        currentRouteModalVisible: true,
-      });
+      try {
+        this.originConfig = JSON.parse(content);
+        this.setState({
+          navs: getNavs(this.originConfig.routes),
+          currentRouteModalVisible: true,
+        });
+      } catch (e) {
+        log(e);
+        return;
+      }
     });
   }
   hideCreateRouteModal = () => {
