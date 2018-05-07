@@ -28,6 +28,9 @@ export class Home extends React.Component<Props, object> {
    * 新增项目弹窗
    */
   createProject = () => {
+    const {
+      addProject,
+    } = this.props;
     const file = dialog.showOpenDialog({
       properties: ['openDirectory', 'createDirectory'],
     });
@@ -54,6 +57,9 @@ export class Home extends React.Component<Props, object> {
           Modal.success({
             content: '创建成功'
           });
+          if (addProject) {
+            addProject(file[0]);
+          }
         })
         .catch((e) => {
           log(e);

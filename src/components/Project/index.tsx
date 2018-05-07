@@ -1,20 +1,43 @@
 // import * as os from 'os';
 import * as cp from 'child_process';
+import * as fs from 'fs';
+import * as path from 'path';
 
 import * as React from 'react';
-import { Icon, Tooltip } from 'antd';
+import {
+  Icon,
+  Tooltip,
+  Modal,
+  Tree,
+  Button,
+  Form,
+  Input,
+} from 'antd';
 import * as classNames from 'classnames';
 import * as detect from 'detect-port';
 import * as kill from 'tree-kill';
 import { shell, ipcRenderer, remote } from 'electron';
+import { FormComponentProps } from 'antd/lib/form';
 
 import './index.css';
-import Menu from './Menu';
+import Operator from './Menu';
 import {
   log,
 } from '../../utils';
 
+interface Nav {
+  text: string;
+  icon: string;
+  to: string;
+  children?: Nav[];
+}
+interface OriginRoute {
+  routes: Route[];
+}
 interface StateType {
+  createRouteModalVisible: boolean;
+  currentRouteModalVisible: boolean;
+  navs: Nav[];
   status: number;
   per: number;
   devUrl?: string;
@@ -28,8 +51,28 @@ interface Process {
   stdout: Object;
 }
 
-interface Props extends ProjectType {
+interface Props extends FormComponentProps {
+  title: string;
+  version: string;
+  path: string;
   removeProject?: Function;
+  originConfig: Object;
+}
+
+interface Route {
+  name: string;
+  path: string;
+  icon: string;
+}
+
+function getNavs (routes: Route[] = []) {
+  return (routes).map((route) => {
+    return {
+      text: route.name,
+      to: route.path,
+      icon: route.icon,
+    };
+  }).filter(route => !!route.icon);
 }
 
 const PROJECT_STATUS = {
@@ -38,13 +81,18 @@ const PROJECT_STATUS = {
   2: '调试服务已停止',
 };
 
+const { TreeNode } = Tree;
 const { BrowserWindow } = remote;
 
-export default class ProjectItem extends React.Component<Props, StateType> {
-  constructor(props: ProjectType) {
+class ProjectItem extends React.Component<Props, StateType> {
+  originConfig: OriginRoute;
+  constructor(props: Props) {
     super(props);
 
     this.state = {
+      createRouteModalVisible: false,
+      currentRouteModalVisible: false,
+      navs: [],
       status: 0,
       per: 0,
       devUrl: undefined,
@@ -54,7 +102,7 @@ export default class ProjectItem extends React.Component<Props, StateType> {
   }
   test = () => {
     const {
-      path,
+      path: projectPath,
     } = this.props;
     const port = 3000;
     detect(port, (err, _port) => {
@@ -67,7 +115,7 @@ export default class ProjectItem extends React.Component<Props, StateType> {
         const subprocess = cp.exec(
           `PORT=${_port} yarn start`, 
           {
-            cwd: path,
+            cwd: projectPath,
           }, 
           (error, stdout, stderr) => {
             if (error) {
@@ -94,7 +142,7 @@ export default class ProjectItem extends React.Component<Props, StateType> {
     });
   }
   startDev = () => {
-    const { path } = this.props;
+    const { path: projectPath } = this.props;
     let port = 3000;
     this.setState({
       status: 1,
@@ -109,7 +157,7 @@ export default class ProjectItem extends React.Component<Props, StateType> {
       } else {
         log(`port: ${port} was occupied, try port: ${_port}`);
         const cmd = cp.spawn('yarn', ['start'], {
-          cwd: path,
+          cwd: projectPath,
           env: Object.assign(process.env, {
             PORT: _port,
           }),
@@ -162,8 +210,90 @@ export default class ProjectItem extends React.Component<Props, StateType> {
    * 增加页面
    */
   createPage = () => {
-    const win = new BrowserWindow({width: 800, height: 600});
-    win.loadURL('http://127.0.0.1:3000/create');
+    const {
+      path: projectPath,
+    } = this.props;
+    // 读取 route.config.json
+    fs.readFile(path.resolve(projectPath, 'src/routes/config.json'), 'utf-8', (err: Error, res: Buffer) => {
+      if (err) {
+        log(err);
+        return;
+      }
+      const content = res.toString();
+      log(content);
+      this.originConfig = JSON.parse(content);
+      this.setState({
+        navs: getNavs(this.originConfig.routes),
+        currentRouteModalVisible: true,
+      });
+    });
+  }
+  hideCreateRouteModal = () => {
+    this.setState({
+      createRouteModalVisible: false,
+    });
+  }
+  add = (nav) => {
+    log(nav);
+  }
+  createRoot = () => {
+    this.setState({
+      createRouteModalVisible: true,
+      currentRouteModalVisible: false,
+    });
+  }
+  createRoute = () => {
+    const { form, path: projectPath } = this.props;
+    const { getFieldValue } = form;
+    const name = getFieldValue('text');
+    const newPath = getFieldValue('to');
+    const icon = getFieldValue('icon');
+    const component = getFieldValue('component');
+    const newJson = JSON.stringify(
+      {
+        routes: [...this.originConfig.routes,
+        {
+          name,
+          path: newPath,
+          icon,
+          indexRoute: component,
+          component: 'HeaderAsideFooterLayout'
+        }],
+      },
+      null,
+      '\t'
+    );
+    fs.writeFile(path.resolve(projectPath, 'src/routes/config.json'), newJson, 'utf-8', (err: Error) => {
+      if (err) {
+        return;
+      }
+    });
+    fs.mkdir(path.join(projectPath, './src/pages/') + component, (err: Error) => {
+      if (err) {
+        log(err);
+        return;
+      }
+      const win = new BrowserWindow({width: 800, height: 600});
+      win.loadURL(`http://127.0.0.1:3000/create/?path=${newPath}`);
+    });
+  }
+  createNode = (navs: Nav[]) => {
+    return (
+      navs.map(nav => (
+        <TreeNode
+          key={nav.to}
+          icon={<Icon type={nav.icon} />}
+          title={(
+            <div>
+              <span>{nav.text}</span>
+              <span onClick={this.add.bind(this, nav)}>+</span>
+            </div>
+          )}
+        >
+          {nav.children && this.createNode(nav.children)}
+        </TreeNode>
+      ))
+    );
   }
 
   removeProject = () => {
@@ -171,37 +301,42 @@ export default class ProjectItem extends React.Component<Props, StateType> {
       removeProject,
     } = this.props;
     const {
-      path,
+      path: projectPath,
     } = this.props;
     if (removeProject) {
-      removeProject(path);
+      removeProject(projectPath);
     }
   }
   openInTerm = () => {
-    const { path } = this.props;
+    const { path: projectPath } = this.props;
     // shell.showItemInFolder(path);
-    ipcRenderer.send('open-term', path);
+    ipcRenderer.send('open-term', projectPath);
   }
   openInEditor = () => {
-    const { path } = this.props;
+    const { path: projectPath } = this.props;
     // shell.showItemInFolder(path);
-    ipcRenderer.send('open-editor', path);
+    ipcRenderer.send('open-editor', projectPath);
   }
   openInFolder = () => {
-    const { path } = this.props;
-    shell.showItemInFolder(path);
+    const { path: projectPath } = this.props;
+    shell.showItemInFolder(projectPath);
   }
 
   render() {
     const {
       title,
       version,
+      form,
     } = this.props;
     const {
+      createRouteModalVisible,
+      currentRouteModalVisible,
+      navs,
       status,
       devUrl,
       output,
     } = this.state;
+    const { getFieldDecorator } = form;
     log(output);
 
     const devBarClassName = classNames({
@@ -256,7 +391,7 @@ export default class ProjectItem extends React.Component<Props, StateType> {
             </div>
           </Tooltip>}
         </div>
-        <Menu
+        <Operator
           methods={[
             this.removeProject,
             this.createPage,
@@ -265,7 +400,57 @@ export default class ProjectItem extends React.Component<Props, StateType> {
             this.openInFolder,
           ]}
         />
+        <Modal
+          title="当前路由"
+          visible={currentRouteModalVisible}
+          footer={false}
+        >
+          <Button type="primary" onClick={this.createRoot}>新增根页面</Button>
+          <Tree
+          >
+            {this.createNode(navs)}
+          </Tree>
+        </Modal>
+        <Modal
+          title="新增页面"
+          visible={createRouteModalVisible}
+          onOk={this.createRoute}
+          onCancel={this.hideCreateRouteModal}
+        >
+          <Form>
+            <Form.Item label="路径">
+              {getFieldDecorator('to', {
+                initialValue: '/',
+              })(
+                <Input />
+              )}
+            </Form.Item>
+            <Form.Item label="标题">
+              {getFieldDecorator('text', {
+                initialValue: 'text',
+              })(
+                <Input />
+              )}
+            </Form.Item>
+            <Form.Item label="图标">
+              {getFieldDecorator('icon', {
+                initialValue: 'home',
+              })(
+                <Input />
+              )}
+            </Form.Item>
+            <Form.Item label="组件名">
+              {getFieldDecorator('component', {
+                initialValue: 'Home',
+              })(
+                <Input />
+              )}
+            </Form.Item>
+          </Form>
+        </Modal>
       </div>
     );
   }
 }
+
+export default Form.create()(ProjectItem);
