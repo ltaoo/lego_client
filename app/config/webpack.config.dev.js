@@ -33,6 +33,7 @@ module.exports = {
   // These are the "entry points" to our application.
   // This means they will be the "root" imports that are included in JS bundle.
   // The first two entry points enable "hot" CSS and auto-refreshes for JS.
+  watch: true,
   entry: [
     // We ship a few polyfills by default:
     require.resolve('./polyfills'),
@@ -56,6 +57,7 @@ module.exports = {
   output: {
     // Add /* filename */ comments to generated require()s in the output.
     pathinfo: true,
+    path: paths.appBuild,
     // This does not produce a real file. It's just the virtual path that is
     // served by WebpackDevServer in development. This is the JS bundle
     // containing code from all our entry points, and the Webpack runtime.
