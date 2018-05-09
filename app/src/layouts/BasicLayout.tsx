@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { Layout, Icon } from 'antd';
 
 import './index.css';
@@ -27,6 +27,11 @@ const menus = [
     icon: <Icon type="code-o" />,
     link: '/term',
   },
+  {
+    title: '终端',
+    icon: <Icon type="code-o" />,
+    link: '/create',
+  },
 ];
 
 const routes = function getRoutes() {
@@ -36,6 +41,7 @@ const routes = function getRoutes() {
       <Route path="/setting" component={Setting} />
       <Route path="/term" component={Term} />
       <Route path="/create" component={Generator} />
+      <Redirect to="/" />
     </Switch>
   );
 };

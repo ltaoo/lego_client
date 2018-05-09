@@ -13,9 +13,10 @@ const getClientEnvironment = require('./env');
 const paths = require('./paths');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
+const port = process.env.PORT;
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
-const publicPath = '/';
+const publicPath = `http://localhost:${port}/dist`;
 // `publicUrl` is just like `publicPath`, but we will provide it to our app
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
 // Omit trailing slash as %PUBLIC_PATH%/xyz looks better than %PUBLIC_PATH%xyz.
@@ -33,37 +34,33 @@ module.exports = {
   // These are the "entry points" to our application.
   // This means they will be the "root" imports that are included in JS bundle.
   // The first two entry points enable "hot" CSS and auto-refreshes for JS.
-  watch: true, // boolean
-  // 启用观察
-  watchOptions: {
-    aggregateTimeout: 1000, // in ms
-    // 将多个更改聚合到单个重构建(rebuild)
-
-    poll: true,
-    poll: 500, // 间隔单位 ms
-    // 启用轮询观察模式
-    // 必须用在不通知更改的文件系统中
-    // 即 nfs shares（译者注：Network FileSystem，最大的功能就是可以透過網路，讓不同的機器、不同的作業系統、可以彼此分享個別的檔案 ( share file )）
-  },
+  // entry: [
+  //   // We ship a few polyfills by default:
+  //   require.resolve('./polyfills'),
+  //   // Include an alternative client for WebpackDevServer. A client's job is to
+  //   // connect to WebpackDevServer by a socket and get notified about changes.
+  //   // When you save a file, the client will either apply hot updates (in case
+  //   // of CSS changes), or refresh the page (in case of JS changes). When you
+  //   // make a syntax error, this client will display a syntax error overlay.
+  //   // Note: instead of the default WebpackDevServer client, we use a custom one
+  //   // to bring better experience for Create React App users. You can replace
+  //   // the line below with these two lines if you prefer the stock client:
+  //   // require.resolve('webpack-dev-server/client') + '?/',
+  //   // require.resolve('webpack/hot/dev-server'),
+  //   require.resolve('react-dev-utils/webpackHotDevClient'),
+  //   // Finally, this is your app's code:
+  //   paths.appIndexJs,
+  //   // We include the app code last so that if there is a runtime error during
+  //   // initialization, it doesn't blow up the WebpackDevServer client, and
+  //   // changing JS code would still trigger a refresh.
+  // ],
   entry: [
-    // We ship a few polyfills by default:
     require.resolve('./polyfills'),
-    // Include an alternative client for WebpackDevServer. A client's job is to
-    // connect to WebpackDevServer by a socket and get notified about changes.
-    // When you save a file, the client will either apply hot updates (in case
-    // of CSS changes), or refresh the page (in case of JS changes). When you
-    // make a syntax error, this client will display a syntax error overlay.
-    // Note: instead of the default WebpackDevServer client, we use a custom one
-    // to bring better experience for Create React App users. You can replace
-    // the line below with these two lines if you prefer the stock client:
-    // require.resolve('webpack-dev-server/client') + '?/',
-    // require.resolve('webpack/hot/dev-server'),
-    require.resolve('react-dev-utils/webpackHotDevClient'),
-    // Finally, this is your app's code:
+    'react-hot-loader/patch',
+    // 这里会影响到 sockjs 的地址
+    `webpack-dev-server/client?http://localhost:3000/`,
+    'webpack/hot/only-dev-server',
     paths.appIndexJs,
-    // We include the app code last so that if there is a runtime error during
-    // initialization, it doesn't blow up the WebpackDevServer client, and
-    // changing JS code would still trigger a refresh.
   ],
   output: {
     // Add /* filename */ comments to generated require()s in the output.
@@ -72,9 +69,9 @@ module.exports = {
     // This does not produce a real file. It's just the virtual path that is
     // served by WebpackDevServer in development. This is the JS bundle
     // containing code from all our entry points, and the Webpack runtime.
-    filename: 'static/js/bundle.js',
+    filename: 'bundle.js',
     // There are also additional JS chunk files if you use code splitting.
-    chunkFilename: 'static/js/[name].chunk.js',
+    chunkFilename: '[name].chunk.js',
     // This is the URL that app is served from. We use "/" in development.
     publicPath: publicPath,
     // Point sourcemap entries to original disk location (format as URL on Windows)

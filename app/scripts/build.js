@@ -104,13 +104,7 @@ function build(previousFileSizes) {
 
   let compiler = webpack(config);
   return new Promise((resolve, reject) => {
-    compiler.watch({
-      aggregateTimeout: 1000, // in ms
-      // 将多个更改聚合到单个重构建(rebuild)
-  
-      poll: true,
-      poll: 500, // 间隔单位 ms
-    }, (err, stats) => {
+    compiler.run((err, stats) => {
       if (err) {
         return reject(err);
       }

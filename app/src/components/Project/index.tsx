@@ -2,6 +2,7 @@
 import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+// import * as url from 'url';
 
 import * as React from 'react';
 import {
@@ -280,8 +281,20 @@ class ProjectItem extends React.Component<Props, StateType> {
       const win = new BrowserWindow({
         width: 800,
         height: 600,
+        show: false,
       });
-      win.loadURL(`http://127.0.0.1:3000/create/?path=${component}&project=${projectPath}`);
+      // win.loadURL(`/build/index.html#/create/?path=${component}&project=${projectPath}`);
+      log(path.resolve('./', 'build/index.html'), __dirname, path.resolve('./'), path.dirname('./'));
+      win.loadURL(`file://${__dirname}/public/index.html`);
+      // win.loadURL(url.format({
+      //   pathname: path.resolve('./', 'build/index.html'),
+      //   file://${__dirname}/public/index.html
+      //   protocol: 'file:',
+      //   slashes: true,
+      // }));
+      win.once('ready-to-show', () => {
+        win.show();
+      });
     });
   }
   createNode = (navs: Nav[]) => {
