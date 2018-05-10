@@ -284,17 +284,20 @@ class ProjectItem extends React.Component<Props, StateType> {
         show: false,
       });
       // win.loadURL(`/build/index.html#/create/?path=${component}&project=${projectPath}`);
-      log(path.resolve('./', 'build/index.html'), __dirname, path.resolve('./'), path.dirname('./'));
-      win.loadURL(`file://${__dirname}/public/index.html`);
+      const createUrl = path.resolve('./', `app/public/index.html#/create/?path=${component}&project=${projectPath}`);
+      win.loadURL(`file://${createUrl}`);
+      win.once('ready-to-show', () => {
+        win.show();
+        this.setState({
+          createRouteModalVisible: false,
+        });
+      });
       // win.loadURL(url.format({
       //   pathname: path.resolve('./', 'build/index.html'),
       //   file://${__dirname}/public/index.html
       //   protocol: 'file:',
       //   slashes: true,
       // }));
-      win.once('ready-to-show', () => {
-        win.show();
-      });
     });
   }
   createNode = (navs: Nav[]) => {

@@ -96,8 +96,8 @@ class Generator extends React.Component<GeneratorPageProps, GeneratorPageState> 
    */
   createPage = () => {
     const code = this.createCode();
-    const search = qs.parse(location.search, { ignoreQueryPrefix: true });
-    log(qs.parse(location.search, { ignoreQueryPrefix: true }), code, fs);
+    const search = qs.parse(location.href.split('?')[1]);
+    log(search);
     // const { getFieldValue } = this.props.form;
     // const fileName = getFieldValue('file');
     fs.writeFile(path.join(search.project, 'src/pages', search.path, 'index.js'), code, (err: Error) => {

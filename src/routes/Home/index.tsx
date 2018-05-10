@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import * as path from 'path';
 
 import * as React from 'react';
 import { remote } from 'electron';
@@ -11,7 +10,7 @@ import Project from '../../components/Project';
 import * as actions from '../../store/actions';
 import { log, createProject } from '../../utils';
 
-const { dialog, BrowserWindow } = remote;
+const { dialog } = remote;
 
 /**
  * 组件属性声明
@@ -82,19 +81,6 @@ export class Home extends React.Component<Props, object> {
       addProject(file[0]);
     }
   }
-  test = () => {
-    const win = new BrowserWindow({
-      width: 800,
-      height: 600,
-      show: false,
-    });
-    // win.loadURL(`/build/index.html#/create/?path=${component}&project=${projectPath}`);
-    log(path.resolve('./', 'build/index.html'), __dirname, path.resolve('./'), path.dirname('./'));
-    win.loadURL(`file://${path.resolve(__dirname, '/public/index.html')}`);
-    win.once('ready-to-show', () => {
-      win.show();
-    });
-  }
   render() {
     const {
       projects,
@@ -106,7 +92,6 @@ export class Home extends React.Component<Props, object> {
             创建项目
           </Button>
           <Button onClick={this.openProject}>打开项目</Button>
-          <Button onClick={this.test}>测试1</Button>
         </div>
         <div className="projects">
           {Object.keys(projects).map((key: string, i: number) => (

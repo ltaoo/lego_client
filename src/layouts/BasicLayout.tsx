@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { Layout, Icon } from 'antd';
 
 import './index.css';
@@ -26,11 +26,6 @@ const menus = [
     title: '终端',
     icon: <Icon type="code-o" />,
     link: '/term',
-  },
-  {
-    title: '终端',
-    icon: <Icon type="code-o" />,
-    link: '/create',
   },
 ];
 

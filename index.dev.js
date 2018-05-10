@@ -123,7 +123,6 @@
  */
 const { app, BrowserWindow } = require('electron');
 // import MenuBuilder from './menu';
-console.log(process.env);
 
 let mainWindow = null;
 

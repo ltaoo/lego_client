@@ -8,7 +8,7 @@
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron app/index.dev",
     "build": "node app/scripts/build.js",
     "test": "node app/scripts/test.js --env=jsdom",
-    "electron": "electron app/index.dev",
+    "electron": "electron index.dev",
     "private:build:mac": "electron-builder --mac"
   },
   "dependencies": {
